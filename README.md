@@ -33,26 +33,9 @@ denisibanez
 /
 frontend-challenge
 forked from doc88git/frontend-challenge
-0
-02
- Code
- Pull requests 0 Actions
- Projects 0
- Wiki
- Security 0
- Insights
- Settings
-frontend-challenge
 /
 README.md
  
-
-Spaces
-
-2
-
-Soft wrap
-1
 # Front-end Challenge - Doc88
 2
 ​
