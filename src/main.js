@@ -7,6 +7,7 @@ import Vuex from 'vuex'
 import store from './store/index'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import VueParallaxJs from 'vue-parallax-js'
+import './vee-validate'
 
 // add vue-parallax-js to vue
 Vue.use(VueParallaxJs)

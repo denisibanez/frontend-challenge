@@ -1,149 +1,263 @@
 <template>
   <div class="wrapper-body">
-    
-    <b-container fluid>
-      <!-- Header-->
-      <b-row class="wrapper-header">
-        <b-col class="wrapper-header-logo">
-          <img src="../assets/img/logo.svg" alt="logo-pastel">
-        </b-col>
-      </b-row>
-
-      <div class="paralax-container">
-        <img src="../assets/img/pastel-paralax.png" alt="paralax" v-parallax="0.2">
-      </div>
-      
-      <!-- Body -->
-      <b-row>
-        <b-container>
-          <b-col>
-            <!-- Form -->
-            <div class="wrapper-form">
-              <div class="wrapper-form-container">
-                <b-row class="form-header">
-                  <b-col xl="8">
-                    <p>Monte aqui o seu cardápio. O que está esperando?</p>
-                  </b-col>
-
-                  <b-col xl="4" class="d-flex justify-content-center check-wrapper">
-                    <span>Comida</span> 
-                    <b-form-checkbox v-model="checked" name="check-button" switch>
-                    </b-form-checkbox>
-                    <span>Bebida</span>
-                  </b-col>
-                </b-row>
-
-                <b-row class="form-body">
-                  <b-col class="form-body-col">
-                    <div class="fix-position">
-                      <b-row>
-                        <b-col xl="5"> 
-                          <b-form-input
-                            id="title"
-                            class="mb-3"
-                            placeholder="Título do pedido"
-                          ></b-form-input>
-                        </b-col>
-
-                        <b-col xl="5">
-                          <b-form-input
-                            id="type"
-                             class="mb-3"
-                            placeholder="Sabor"
-                          ></b-form-input>
-                        </b-col>
-
-                        <b-col xl="2">
-                          <b-form-input
-                            id="price"
-                             class="mb-3"
-                            placeholder="R$"
-                          ></b-form-input>
-                        </b-col> 
-                      </b-row>
-
-                      <b-row class="mb-4">
-                        <b-col>
-                          <b-form-textarea
-                            id="textarea"
-                            v-model="text"
-                            placeholder="Descrição"
-                            rows="3"
-                            max-rows="6"
-                          ></b-form-textarea>
-                        </b-col>
-                      </b-row>
-
-                      <b-row class="mb-4">
-                        <b-col>
-                          <div class="uploade-image">
-                            <b-icon-card-image class="icon"></b-icon-card-image>
-                            <p>Jogue aqui o arquivo de imagem do seu pastel ou clique para localizar a pasta.</p>
-                          </div>
-                        </b-col>
-                      </b-row>
-                    </div>
-
-                    <div class="fix-btn-position">
-                      <b-row class="d-flex justify-content-center mb-3">
-                        <b-col>
-                          <b-button class="button-clean">Limpar</b-button>
-                          <b-button class="button-sign-up">Cadastrar</b-button>
-                        </b-col>
-                      </b-row>
-                    </div>
-                  </b-col>
-                </b-row>
-              </div>
-            </div>
+    <ValidationObserver
+      v-slot="{ valid }"
+      ref="observer"
+      tag="form"
+      @submit.prevent="submit()"
+    >
+      <b-container fluid>
+        <!-- Header-->
+        <b-row class="wrapper-header">
+          <b-col class="wrapper-header-logo">
+            <img src="../assets/img/logo.svg" alt="logo-pastel">
           </b-col>
-        </b-container>
-      </b-row>
+        </b-row>
 
-      <!-- Separator -->
-      <b-row class="separator">
-        <b-col>
-          <h1>
-            <span>Veja como será apresentado ao cliente</span>
-          </h1>
-        </b-col>
-      </b-row>
-      
-      <!-- Item Product -->
-      <b-row class="wrapper-item-card d-flex justify-content-center">
-        <b-col offset-lx="2" sm="9" xl="9">
-          <b-row class="item-header">
-            <b-col xl="10" class="item-header-title">
-              <p>Suco de goiaba</p>
-            </b-col>
+        <div class="paralax-container">
+          <img src="../assets/img/pastel-paralax.png" alt="paralax" v-parallax="0.2">
+        </div>
+        
+        <!-- Body -->
+        <b-row>
+          <b-container>
+            <b-col>
+              <!-- Form -->
+              <div class="wrapper-form">
+                <div class="wrapper-form-container">
+                  <b-row class="form-header">
+                    <b-col xl="8">
+                      <p>Monte aqui o seu cardápio. O que está esperando?</p>
+                    </b-col>
 
-            <b-col xl="2" class="price">
-              <p>R$ 5,00</p>
-            </b-col>
-          </b-row>
+                    <b-col xl="4" class="d-flex justify-content-center check-wrapper">
+                      <span>Comida</span> 
+                      <b-form-checkbox v-model="checked" name="check-button" switch>
+                      </b-form-checkbox>
+                      <span>Bebida</span>
+                    </b-col>
+                  </b-row>
 
-          <b-row>
-            <b-col class="item-body-description">
-              <img src="../assets/img/images.png" alt="">
-              <p><strong>Sabor:</strong> "Goiaba"</p>
-              <p><strong>Descrição:</strong> Um mero suco de goiaba. Tem sachet de açucar no balcão...</p>
+                  <b-row class="form-body">
+                    <b-col class="form-body-col">
+                      <div class="fix-position">
+                        <b-row>
+                          <b-col xl="5">
+                            <validation-provider
+                              :rules="{ required:true, min: 3, max: 60, checkLetters: true }"
+                              v-slot="{ errors }"
+                              class="text-left">
+                              <b-form-input
+                                id="title"
+                                placeholder="Título do pedido"
+                                class="mb-3"
+                                v-model="form.title"
+                                :maxlength="60"
+                                :minlength="3"
+                                :type="'text'"
+                              ></b-form-input>
+                              <span class="error">{{ errors[0] }}</span>
+                            </validation-provider>
+                          </b-col>
+
+                          <b-col xl="5">
+                            <validation-provider
+                              :rules="{ required:true, min: 3, max: 60, checkLetters: true  }"
+                              v-slot="{ errors }"
+                              class="text-left">
+                              <b-form-input
+                                id="flavor"
+                                type="text"
+                                placeholder="Sabor"
+                                class="mb-3"
+                                v-model="form.flavor"
+                                :maxlength="60"
+                                :minlength="3"
+                              ></b-form-input>
+                              <span class="error">{{ errors[0] }}</span>
+                            </validation-provider>
+                          </b-col>
+
+                          <b-col xl="2">
+                            <validation-provider
+                              rules="required|checkValue"
+                              v-slot="{ errors }"
+                              class="text-left">
+                              <b-form-input
+                                id="price"
+                                type="text"
+                                placeholder="R$"
+                                class="mb-3"
+                                v-model="form.price"
+                                v-money="form.price !== null ? money : null"
+                              ></b-form-input>
+                              <span class="error">{{ errors[0] }}</span>
+                            </validation-provider>
+                          </b-col> 
+                        </b-row>
+
+                        <b-row class="mb-4">
+                          <b-col>
+                            <b-form-textarea
+                              id="textarea"
+                              placeholder="Descrição"
+                              rows="3"
+                              max-rows="6"
+                              type="text"
+                              v-model="form.description"
+                            ></b-form-textarea>
+                          </b-col>
+                        </b-row>
+
+                        <b-row class="mb-4">
+                          <b-col>
+                            <image-upload
+                              @uploadImage="updateUrl($event)"
+                              :url="form.image.url"></image-upload>
+                          </b-col>
+                        </b-row>
+                      </div>
+
+                      <div class="fix-btn-position">
+                        <b-row class="d-flex justify-content-center mb-3">
+                          <b-col>
+                            <b-button
+                              class="button-clean"
+                              @click="cleanForm()">
+                              Limpar
+                            </b-button>
+                            <b-button
+                              class="button-sign-up"
+                              :disabled="!valid"
+                              @click="submit()">
+                              Cadastrar
+                            </b-button>
+                          </b-col>
+                        </b-row>
+                      </div>
+                    </b-col>
+                  </b-row>
+                </div>
+              </div>
             </b-col>
-          </b-row>
-        </b-col>
-      </b-row>
-    </b-container>
+          </b-container>
+        </b-row>
+
+        <!-- Separator -->
+        <b-row class="separator">
+          <b-col>
+            <h1>
+              <span>Veja como será apresentado ao cliente</span>
+            </h1>
+          </b-col>
+        </b-row>
+        
+        <!-- Item Product -->
+        <div v-if="items.length">
+          <item-product
+            v-for="(item, index) in items"
+            :key="index"
+            :id="index"
+            :item="item">
+          </item-product>
+        </div>
+
+        <b-row class="d-flex justify-content-center" v-else>
+          <b-col>
+            <p class="not-found-items">Nenhum pedido feito.</p>
+          </b-col>
+        </b-row>
+      </b-container>
+    </ValidationObserver> 
   </div>
 </template>
 
 <script>
+import { VMoney } from 'v-money'
+
+import ImageUpload from '@/components/ImageUpload'
+import ItemProduct from '@/components/ItemProduct'
+
 export default {
   name: 'index',
+
+  components: {
+    ImageUpload,
+    ItemProduct,
+  },
+
+  directives: { 
+    money: VMoney
+  },
+
   data () {
     return {
-      checked: true
+      checked: false,
+      money: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: '',
+        precision: 2,
+        masked: false /* doesn't work with directive */
+      },
+      form: {
+        title: '',
+        flavor: '',
+        price: null, 
+        description:'',
+        image: {
+          url: null
+        },
+        typeFood: 'Bebida',
+        updateAt: null
+      },
+      items: []
     }
+  },
+
+  methods: {
+    updateUrl($event) {
+      this.form.image.url = $event
+    },
+
+    cleanForm() {
+      this.form = {
+        title: '',
+        flavor: '',
+        description:'',
+        price: null,
+        image: {
+          url: null
+        },
+        typeFood: 'Bebida'
+      }
+
+      this.checked = false
+    },
+
+    async submit() {
+      const isValid = await this.$refs.observer.validate()
+      if (isValid) {
+        this.form.updateAt = new Date()
+        this.items.push(this.form)
+        this.sortItems()
+        this.cleanForm()
+      }
+    },
+
+    sortItems() {
+      this.items = this.items.sort((a, b) => new Date(b.updateAt) - new Date(a.updateAt))
+    }
+  },
+
+  watch: {
+    checked(value) {
+      this.form.typeFood = !value ? 'Bebida' : 'Comida'
+    }  
   }
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -181,7 +295,7 @@ export default {
   }
 
   .wrapper-form {
-    min-height: 30vh;
+    min-height: 40vh;
 
     .wrapper-form-container {
       padding: 50px;
@@ -238,7 +352,7 @@ export default {
         border-bottom-right-radius: 20px;
         opacity: 1;
         position: relative;
-        height: 350px;
+        height: 400px;
         z-index: 11;
 
         .form-body-col {
@@ -273,25 +387,12 @@ export default {
             &.button-sign-up {
               background: #FFCA00 0% 0% no-repeat padding-box;
               color: #A03400;
+
+              &:disabled {
+                background-color: #b3b3b3;
+                color: #ffffff;
+              }
             }
-          }
-        }
-
-        .uploade-image {
-          border: 1px solid #E43636;
-          border-radius: 10px;
-          min-height: 110px;
-          padding: 15px;
-          cursor: pointer;
-          
-          .icon {
-            font-size: 50px;
-            color: #E43636;
-          }
-
-          p {
-            font-size:16px;
-            color: #A03400;
           }
         }
       } 
@@ -322,61 +423,29 @@ export default {
     }
   }
 
-  .wrapper-item-card {
-    padding: 70px 0;
-    .item-header {
-      background: #E43636 0% 0% no-repeat padding-box;
-      border-radius: 20px 20px 0px 0px;
-      opacity: 1;
-      line-height: 80px;
-      height: 80px;
+  .not-found-items {
+    color: #A03400;
+    width: 100%;
+    padding: 50px;
+    height: 50px;
+    font-size: 24px;
+    line-height: 5px;
+  }
 
-      .item-header-title {
-        text-align: left;
-        color: #FFCA00;
-        font-size:30px;
-        padding: 0 50px;
-        
-        p {
-          margin-left:45px;
-        }
-      }
+  .error {
+    color: #A03400;
+    font-size: 14px;
+    position: relative;
+    top: -15px;
+  }
 
-      .price {
-        color: #FFFFFF;
-        font-size:26px;
-        font-weight: bold;
-      }
-    }
-
-    .item-body-description {
-      background-color: #ffffff;
-      min-height: 120px;
-      padding: 30px;
-      box-shadow: 0px 0px 30px #740B0B45;
-      border-bottom-right-radius: 20px;
-      border-bottom-left-radius: 20px;
-
-      img {
-        position: absolute;
-        left: -110px;
-        top: -25px;
-        height: 180px;
-        width: 180px;
-        border-radius: 10px;
-      }
-
-      p {
-        color: #A03400;
-        text-align: left;
-        font-size: 24px;
-        margin-left:60px;
-      }
-    }
+  .text-left {
+    float: left;
+    width: 100%;
   }
 }
 
-@media(max-width:1024px) {
+@media(max-width:1200px) {
   .wrapper-body{
     .paralax-container {
       top: 120px;
@@ -386,10 +455,10 @@ export default {
     }
 
     .wrapper-form {
-      min-height: 35vh;
+      min-height: 45vh;
       .wrapper-form-container  {
         .form-body {
-          height: 430px;
+          height: 550px;
         }
       }
     }
@@ -415,10 +484,10 @@ export default {
     }
 
     .wrapper-form {
-      min-height: 45vh;
+      min-height: 60vh;
       .wrapper-form-container  {
         .form-body {
-          height: 430px;
+          height: 550px;
         }
       }
     }
@@ -434,7 +503,7 @@ export default {
   }
 }
 
-@media(max-width:500px) {
+@media(max-width:576px) {
   .wrapper-body{
     .paralax-container {
       display: none;
@@ -452,7 +521,7 @@ export default {
       min-height: 80vh;
       .wrapper-form-container  {
         .form-body {
-          height: 460px;
+          height: 550px;
 
           .fix-btn-position {
             bottom: -160px;
