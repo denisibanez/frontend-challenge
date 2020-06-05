@@ -10,7 +10,7 @@
         <!-- Header-->
         <b-row class="wrapper-header">
           <b-col class="wrapper-header-logo">
-            <img src="../assets/img/logo.svg" alt="logo-pastel">
+            <img src="../assets/img/logotipo.svg" alt="logo-pastel">
           </b-col>
         </b-row>
 
